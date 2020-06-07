@@ -4,11 +4,21 @@ public class BinaryTreeReversal
 {
     public static void main(String[] args)
     {
+        //Prepare the needed class
         BinaryTreeReversal binaryTreeReversal = new BinaryTreeReversal();
+
+        // Generate a binary tree
         BinaryTree tree = binaryTreeReversal.generateTree();
+
+        // Visualize the currently created tree
         binaryTreeReversal.visualizeTree(tree);
+
+        // Reverse the tree
         binaryTreeReversal.reverseTree(tree);
+
         System.out.println("\n--Reverse--\n");
+
+        //Visualize the reversed tree
         binaryTreeReversal.visualizeTree(tree);
 
     }

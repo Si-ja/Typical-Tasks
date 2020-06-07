@@ -28,6 +28,28 @@ public class AnagramCheck
     }
 
     /**
+     * A method that prepares a HashMap for each sentence that is passed to it.
+     * @param sentence - a String of information that needs to be turned into a HashMap
+     * @return HashMap {Character, Integer} representing the sentence Hashed.
+     */
+    public static HashMap<Character, Integer> prepareHashMap(String sentence)
+    {
+        HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+        for (int i = 0; i < sentence.length(); i++)
+        {
+            if (map.containsKey(sentence.charAt(i)))
+            {
+                map.put(sentence.charAt(i), map.get(sentence.charAt(i)) + 1);
+            }
+            else
+            {
+                map.put(sentence.charAt(i), 1);
+            }
+        }
+        return map;
+    }
+
+    /**
      * Check if two strings are anagrams of each other. In python such approach would be most easily done with dictionaries,
      * Where in java working around HashMaps seems to be the easiest solution.
      * @param sentence1 - sentence one that you want to compare to sentence two for anagram(ic presence)
@@ -36,38 +58,11 @@ public class AnagramCheck
      */
     public static Boolean checkAnagram(String sentence1, String sentence2)
     {
-        String clean_sentence1 = cleanString(sentence1);
-        String clean_sentence2 = cleanString(sentence2);
-
-        // Keep track of how many instances each letter has in a sentence
-        HashMap<Character, Integer> dictionary_sentence1 = new HashMap<Character, Integer>();
-        HashMap<Character, Integer> dictionary_sentence2 = new HashMap<Character, Integer>();
-
-        for (int i = 0; i < clean_sentence1.length(); i++)
-        {
-            if (dictionary_sentence1.containsKey(clean_sentence1.charAt(i)))
-            {
-                dictionary_sentence1.put(clean_sentence1.charAt(i), dictionary_sentence1.get(clean_sentence1.charAt(i)) + 1);
-            }
-            else
-            {
-                dictionary_sentence1.put(clean_sentence1.charAt(i), 1);
-            }
-        }
-
-        for (int i = 0; i < clean_sentence2.length(); i++)
-        {
-            if (dictionary_sentence2.containsKey(clean_sentence2.charAt(i)))
-            {
-                dictionary_sentence2.put(clean_sentence2.charAt(i), dictionary_sentence2.get(clean_sentence2.charAt(i)) + 1);
-            }
-            else
-            {
-                dictionary_sentence2.put(clean_sentence2.charAt(i), 1);
-            }
-        }
+        // Clean and Hash sentences or words needed for analysis
+        HashMap<Character, Integer> map1 = prepareHashMap(cleanString(sentence1));
+        HashMap<Character, Integer> map2 = prepareHashMap(cleanString(sentence2));
 
         // Compare two HashMaps if they hold the same type dictionaries
-        return dictionary_sentence1.equals(dictionary_sentence2);
+        return map1.equals(map2);
     }
 }

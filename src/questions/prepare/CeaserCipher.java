@@ -22,89 +22,69 @@ public class CeaserCipher
     public static void main(String[] args)
     {
         CeaserCipher ceaserCipher = new CeaserCipher();
-        Integer N = 30;
+        Integer N = 55;
         String phrase1 = "Hello There";
         String phrase2 = "Can anyone wield such power";
-        System.out.println("Coding phrase [" + phrase1 + "] with " + N + " rotation gives: [" + ceaserCipher.coder(phrase1, N) + "] and back -> [" + ceaserCipher.decode(ceaserCipher.coder(phrase1, N), N) + "]");
-        System.out.println("Coding phrase [" + phrase2 + "] with " + N + " rotation gives: [" + ceaserCipher.coder(phrase2, N) + "] and back -> [" + ceaserCipher.decode(ceaserCipher.coder(phrase2, N), N) + "]");
+        System.out.println("Coding phrase [" + phrase1 + "] with " + N + " rotation gives: [" + ceaserCipher.cipher(phrase1, N) + "] and back -> [" + ceaserCipher.cipher(ceaserCipher.cipher(phrase1, N), -N) + "]");
+        System.out.println("Coding phrase [" + phrase2 + "] with " + N + " rotation gives: [" + ceaserCipher.cipher(phrase2, N) + "] and back -> [" + ceaserCipher.cipher(ceaserCipher.cipher(phrase2, N), -N) + "]");
     }
 
     /**
-     * Implement the decoder of the coded sentences
-     * @param code String of information that needs to be decoded
-     * @param rotation a rotation in the Cipher algorithm
-     * @return the sentence that was encoded
+     * Cipher that encodes information backwards and forwards
+     * @param text something that you want to encode or decode
+     * @param rotation the key value you must know to decide into which direction would the
+     *                 letters be rotated in the alphabet
+     * @return the encoded or decoded message
      */
-    private String decode(String code, Integer rotation)
+    public String cipher(String text, Integer rotation)
     {
-        String decode = "";
-        for (int i = 0; i < code.length(); i++)
+        String message = "";
+        // Bring the rotation into the range we can operate with
+        int operational_range = this.LETTER_Z - this.LETTER_A + 1;
+        int rotation_abs = Math.abs(rotation);
+        while (rotation_abs > operational_range)
         {
-            int to_uncipher = 0;
-            int letter_int = (int) code.toLowerCase().charAt(i);
-            if (letter_int == SPACE)
-            {
-                decode += " ";
-                continue;
-            }
-            if (rotation <= letter_int - this.LETTER_A)
-            {
-                to_uncipher += letter_int - rotation;
-                decode += String.valueOf((char) to_uncipher);
-            }
-            else
-            {
-                int letters_range = this.LETTER_Z - this.LETTER_A + 1;
-                int decrease_current_rot = rotation - (letter_int - this.LETTER_A);
-                int range_ramainder = this.LETTER_Z - (decrease_current_rot % letters_range) + 1;
-                if (range_ramainder > this.LETTER_Z)
-                {
-                    to_uncipher = this.LETTER_A;
-                }
-                else
-                {
-                    to_uncipher = range_ramainder;
-                }
-                decode += String.valueOf((char) to_uncipher);
-            }
-
+            rotation_abs -= operational_range;
         }
-        return decode;
-    }
-
-    /**
-     * It only seems fitting for me to implement the encoder as well. Otherwise, honestly
-     * what is the point and how will you check properly the decoder.
-     * @param text String of text that you want to encode with Ceaser Cipher
-     * @param rotation an Integer value in the rotation cycle for Ciphering
-     * @return an encoded String of text
-     */
-    private String coder(String text, Integer rotation)
-    {
-        String encoded = "";
+        // When we decrease the range, we know that we are moving inside of only one alphabet distance
         for (int i = 0; i < text.length(); i++)
         {
             int to_cipher = 0;
             int letter_int = (int) text.toLowerCase().charAt(i);
+            // If it is a space, it is a special case that needs to be maintained
             if (letter_int == SPACE)
             {
-                encoded += " ";
+                message += " ";
                 continue;
             }
-            if (rotation <= this.LETTER_Z - letter_int)
+            // If the value increases, check if the increase is possible, otherwise adjust for it
+            if (rotation < 0)
             {
-                to_cipher = letter_int + rotation;
-                encoded += String.valueOf((char) to_cipher);
+                if (letter_int - rotation_abs >= this.LETTER_A )
+                {
+                    to_cipher = letter_int - rotation_abs;
+                    message += String.valueOf((char) to_cipher);
+                }
+                else
+                {
+                    to_cipher = this.LETTER_Z - (this.LETTER_A - (letter_int - rotation_abs) - 1);
+                    message += String.valueOf((char) to_cipher);
+                }
             }
-            else {
-                int letters_range = this.LETTER_Z - this.LETTER_A + 1;
-                int decrease_current_rot = rotation - (this.LETTER_Z - letter_int);
-                int range_ramainder = this.LETTER_A + (decrease_current_rot % letters_range) - 1;
-                to_cipher = range_ramainder;
-                encoded += String.valueOf((char) to_cipher);
+            else
+            {
+                if (letter_int + rotation_abs <= this.LETTER_Z)
+                {
+                    to_cipher = letter_int + rotation_abs;
+                    message += String.valueOf((char) to_cipher);
+                }
+                else
+                {
+                    to_cipher = this.LETTER_A + (letter_int + rotation_abs) - this.LETTER_Z - 1;
+                    message += String.valueOf((char) to_cipher);
+                }
             }
         }
-
-        return encoded;
+        return message;
     }
 }

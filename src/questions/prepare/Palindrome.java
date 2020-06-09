@@ -22,6 +22,7 @@ public class Palindrome
             userText = scanner.nextLine();
         }
         System.out.println("Is the word " + userText + " a palindrome of itself: " + checkPalindrome(userText));
+        scanner.close();
     }
 
     /**

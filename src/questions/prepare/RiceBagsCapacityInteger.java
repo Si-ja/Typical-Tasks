@@ -36,6 +36,20 @@ public class RiceBagsCapacityInteger
     public static Integer getNumberSmallBags(Integer big, Integer small, Integer goal)
     {
         Integer volume_remaining = goal - big * 5;
-        return volume_remaining > small ? -1 : goal - big * 5;
+        if (volume_remaining > small)
+        {
+            return -1;
+        }
+        else
+        {
+            if (goal - big * 5 <= 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return goal - big * 5;
+            }
+        }
     }
 }
